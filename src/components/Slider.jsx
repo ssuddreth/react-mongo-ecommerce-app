@@ -54,6 +54,7 @@ const ImgContainer = styled.div`
 
 const Image = styled.img`
     height: 80%;
+    padding-left: 20%;
 `;
 
 const InfoContainer = styled.div`
@@ -98,7 +99,7 @@ export const Slider = () => {
             </Arrow>
             <Wrapper slideIndex={slideIndex}>
                 {sliderItems.map((item) => (
-                <Slide bg={item.bg}>
+                <Slide bg={item.bg} key={item.id}>
                     <ImgContainer>
                         <Image src={savedImage} />
                     </ImgContainer>
@@ -116,3 +117,5 @@ export const Slider = () => {
         </Container>
     )
 }
+
+export default Slider;
