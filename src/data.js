@@ -55,7 +55,7 @@ export const sliderItems = [
     },
     {
       id:4,
-      img:"https://ragstock.com/wp-content/uploads/vintage-recycled-tee-shirt-front-2527.jpg",
+      img:"https://ae01.alicdn.com/kf/Scfda09d48399458c878d1eefabffbd11K/Dress-Linkin-Park-Linkin-Park-No-1.jpg_Q90.jpg_.webp",
     },
     {
       id:5,
