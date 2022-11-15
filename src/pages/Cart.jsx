@@ -5,6 +5,13 @@ import Announcement from '../components/Announcement';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { mobile } from '../responsive';
+import StripeCheckout from "react-stripe-checkout";
+import { useEffect, useState } from "react";
+import { userRequest } from "../requestMethods";
+import axios from "axios";
+//import { useNavigate } from "react-router-dom";
+
+const keyP = "pk_test_51M46JDCjei6RB6k1ms9rW6KHuCIEQZlU565o3wHTc96IrKZ1qq56mEfCrIIBJX709AwV2DsXpywTKUA74cpnpDWg003Rm5zX8N";
 
 const Container = styled.div``;
 
@@ -154,99 +161,137 @@ const Button = styled.button`
 `;
 
 const Cart = () => {
-    return (
-        <Container>
-            <Navbar />
-            <Announcement />
-            <Wrapper>
-                <Title>YOUR BAG</Title>
-                <Top>
-                    <TopButton>CONTINUE SHOPPING</TopButton>
-                    <TopTexts>
-                        <TopText>Shopping Bag(2)</TopText>
-                        <TopText>Your Wishlist (0)</TopText>
-                    </TopTexts>
-                    <TopButton type="filled">CHECKOUT NOW</TopButton>
-                </Top>
-                <Bottom>
-                    <Info>
-                        <Product>
-                            <ProductDetail>
-                                <Image src="https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1614188818-TD1MTHU_SHOE_ANGLE_GLOBAL_MENS_TREE_DASHERS_THUNDER_b01b1013-cd8d-48e7-bed9-52db26515dc4.png?crop=1xw:1.00xh;center,top&resize=480%3A%2A" />
-                                <Details>
-                                    <ProductName>
-                                        <b>Product:</b> JESSIE THUNDER SHOES
-                                    </ProductName>
-                                    <ProductId>
-                                        <b>ID:</b> 93813718293
-                                    </ProductId>
-                                    <ProductColor color="black" />
-                                    <ProductSize>
-                                        <b>Size:</b> 37.5
-                                    </ProductSize>
-                                </Details>
-                            </ProductDetail>
-                            <PriceDetail>
-                                <ProductAmountContainer>
-                                    <Add />
-                                    <ProductAmount>2</ProductAmount>
-                                    <Remove />
-                                </ProductAmountContainer>
-                                <ProductPrice>$ 30</ProductPrice>
-                            </PriceDetail>
-                        </Product>
-                        <Hr />
-                        <Product>
-                            <ProductDetail>
-                                <Image src="https://i.pinimg.com/originals/2d/af/f8/2daff8e0823e51dd752704a47d5b795c.png" />
-                                <Details>
-                                    <ProductName>
-                                        <b>Product:</b> HAKURA T-SHIRT
-                                    </ProductName>
-                                    <ProductId>
-                                        <b>ID:</b> 93813718293
-                                    </ProductId>
-                                    <ProductColor color="gray" />
-                                    <ProductSize>
-                                        <b>Size:</b> M
-                                    </ProductSize>
-                                </Details>
-                            </ProductDetail>
-                            <PriceDetail>
-                                <ProductAmountContainer>
-                                    <Add />
-                                    <ProductAmount>1</ProductAmount>
-                                    <Remove />
-                                </ProductAmountContainer>
-                                <ProductPrice>$ 20</ProductPrice>
-                            </PriceDetail>
-                        </Product>
-                    </Info>
-                    <Summary>
-                        <SummaryTitle>ORDER SUMMARY</SummaryTitle>
-                        <SummaryItem>
-                            <SummaryItemText>Subtotal</SummaryItemText>
-                            <SummaryItemPrice>$ 80</SummaryItemPrice>
-                        </SummaryItem>
-                        <SummaryItem>
-                            <SummaryItemText>Estimated Shipping</SummaryItemText>
-                            <SummaryItemPrice>$ 5.90</SummaryItemPrice>
-                        </SummaryItem>
-                        <SummaryItem>
-                            <SummaryItemText>Shipping Discount</SummaryItemText>
-                            <SummaryItemPrice>$ -5.90</SummaryItemPrice>
-                        </SummaryItem>
-                        <SummaryItem type="total">
-                            <SummaryItemText>Total</SummaryItemText>
-                            <SummaryItemPrice>$ 80</SummaryItemPrice>
-                        </SummaryItem>
-                        <Button>CHECKOUT NOW</Button>
-                    </Summary>
-                </Bottom>
-            </Wrapper>
-            <Footer />
-        </Container>
-    )
-}
+
+  const [stripeToken, setStripeToken] = useState(null);
+  //const navigate = useNavigate();
+
+  const onToken = (token) => {
+    setStripeToken(token);
+  };
+
+  useEffect(() => {
+    const makeRequest = async () => {
+      try {
+        const res = await axios.post("http://localhost:5000/api/checkout/payment", {
+          tokenId: stripeToken.id,
+          amount: 500,
+        });
+        /*navigate("/success", {
+          stripeData: res.data,
+          products: cart,
+        });*/
+        //console.log(res.data);
+      } catch (err) { 
+        console.log(err);
+      }
+    };
+    stripeToken && makeRequest();
+  }, [stripeToken]);
+
+  return (
+    <Container>
+      <Navbar />
+      <Announcement />
+      <Wrapper>
+        <Title>YOUR BAG</Title>
+        <Top>
+          <TopButton>CONTINUE SHOPPING</TopButton>
+          <TopTexts>
+            <TopText>Shopping Bag(2)</TopText>
+            <TopText>Your Wishlist (0)</TopText>
+          </TopTexts>
+          <TopButton type="filled">CHECKOUT NOW</TopButton>
+        </Top>
+        <Bottom>
+          <Info>
+            <Product>
+              <ProductDetail>
+                <Image src="https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1614188818-TD1MTHU_SHOE_ANGLE_GLOBAL_MENS_TREE_DASHERS_THUNDER_b01b1013-cd8d-48e7-bed9-52db26515dc4.png?crop=1xw:1.00xh;center,top&resize=480%3A%2A" />
+                <Details>
+                  <ProductName>
+                    <b>Product:</b> JESSIE THUNDER SHOES
+                  </ProductName>
+                  <ProductId>
+                    <b>ID:</b> 93813718293
+                  </ProductId>
+                  <ProductColor color="black" />
+                  <ProductSize>
+                    <b>Size:</b> 37.5
+                  </ProductSize>
+                </Details>
+              </ProductDetail>
+              <PriceDetail>
+                <ProductAmountContainer>
+                  <Add />
+                  <ProductAmount>2</ProductAmount>
+                  <Remove />
+                </ProductAmountContainer>
+                <ProductPrice>$ 30</ProductPrice>
+              </PriceDetail>
+            </Product>
+            <Hr />
+            <Product>
+              <ProductDetail>
+                <Image src="https://i.pinimg.com/originals/2d/af/f8/2daff8e0823e51dd752704a47d5b795c.png" />
+                <Details>
+                  <ProductName>
+                    <b>Product:</b> HAKURA T-SHIRT
+                  </ProductName>
+                  <ProductId>
+                    <b>ID:</b> 93813718293
+                  </ProductId>
+                  <ProductColor color="gray" />
+                  <ProductSize>
+                    <b>Size:</b> M
+                  </ProductSize>
+                </Details>
+              </ProductDetail>
+              <PriceDetail>
+                <ProductAmountContainer>
+                  <Add />
+                  <ProductAmount>1</ProductAmount>
+                  <Remove />
+                </ProductAmountContainer>
+                <ProductPrice>$ 20</ProductPrice>
+              </PriceDetail>
+            </Product>
+          </Info>
+          <Summary>
+            <SummaryTitle>ORDER SUMMARY</SummaryTitle>
+            <SummaryItem>
+              <SummaryItemText>Subtotal</SummaryItemText>
+              <SummaryItemPrice>$ 80</SummaryItemPrice>
+            </SummaryItem>
+            <SummaryItem>
+              <SummaryItemText>Estimated Shipping</SummaryItemText>
+              <SummaryItemPrice>$ 5.90</SummaryItemPrice>
+            </SummaryItem>
+            <SummaryItem>
+              <SummaryItemText>Shipping Discount</SummaryItemText>
+              <SummaryItemPrice>$ -5.90</SummaryItemPrice>
+            </SummaryItem>
+            <SummaryItem type="total">
+              <SummaryItemText>Total</SummaryItemText>
+              <SummaryItemPrice>$ 80</SummaryItemPrice>
+            </SummaryItem>
+            <StripeCheckout
+              name="Avant"
+              image="https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,f_auto,q_auto:eco,dpr_1/tbnkq9whzxvh5fxpj6uj"
+              billingAddress
+              shippingAddress
+              description="Your total is $5.00"
+              amount={500}
+              token={onToken}
+              stripeKey={keyP}
+            >
+              <Button>CHECKOUT NOW</Button>
+            </StripeCheckout>
+          </Summary>
+        </Bottom>
+      </Wrapper>
+      <Footer />
+    </Container>
+  )
+};
 
 export default Cart
